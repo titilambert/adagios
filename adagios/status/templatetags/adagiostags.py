@@ -1,5 +1,8 @@
 from datetime import datetime
 from django import template
+from django.utils.translation import ungettext
+from django.utils.translation import ugettext as _
+
 register = template.Library()
 
 @register.filter("timestamp")
@@ -50,9 +53,13 @@ def duration(value, arg = ''):
 
             # Set short names
             dayUnitName = ' day'
+            dayUnitName_p = ' days'
             hourUnitName = ' hr'
+            hourUnitName_p = ' hrs'
             minUnitName = ' min'
+            minUnitName_p = ' mins'
             secUnitName = ' sec'
+            secUnitName_p = ' secs'
 
             # Set short duration unit splitters
             lastDurSplitter = ' '
@@ -63,12 +70,16 @@ def duration(value, arg = ''):
 
             # Set long names
             dayUnitName = ' day'
+            dayUnitName_p = ' days'
             hourUnitName = ' hour'
+            hourUnitName_p = ' hours'
             minUnitName = ' minute'
+            minUnitName_p = ' minutes'
             secUnitName = ' second'
+            secUnitName_p = ' seconds'
 
             # Set long duration unit splitters
-            lastDurSplitter = ' and '
+            lastDurSplitter = _(' and ')
             nextDurSplitter = ', '
 
         # Create string to hold outout
@@ -99,7 +110,7 @@ def duration(value, arg = ''):
         if days > 0:
 
             # Add multiple days to duration string
-            durationString += ' ' + str(days) + dayUnitName + (days > 1 and 's' or '')
+            durationString += ' ' + str(days) + ungettext(dayUnitName, dayUnitName_p, days)
 
         # Determine if next string is to be shown
         if hours > 0:
@@ -120,7 +131,7 @@ def duration(value, arg = ''):
         if hours > 0:
 
             # Add multiple days to duration string
-            durationString += hourSplitter + ' ' + str(hours) + hourUnitName + (hours > 1 and 's' or '')
+            durationString += hourSplitter + ' ' + str(hours) + ungettext(hourUnitName, hourUnitName_p, hours)
 
         # Determine if next string is to be shown
         if minutes > 0:
@@ -141,7 +152,7 @@ def duration(value, arg = ''):
         if minutes > 0:
 
             # Add multiple days to duration string
-            durationString += minSplitter + ' ' + str(minutes) + minUnitName + (minutes > 1 and '' or '')
+            durationString += minSplitter + ' ' + str(minutes) + ungettext(minUnitName, minUnitName_p, minutes)
 
         # Determine if next string is last
         if seconds > 0:
@@ -153,7 +164,7 @@ def duration(value, arg = ''):
         if seconds > 0:
 
             # Add multiple days to duration string
-            durationString += secSplitter + ' ' + str(seconds) + secUnitName + (seconds > 1 and '' or '')
+            durationString += secSplitter + ' ' + str(seconds) + ungettext(secUnitName, secUnitName_p, seconds)
 
         # Return duration string
         return durationString.strip()
