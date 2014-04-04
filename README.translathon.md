@@ -32,4 +32,4 @@ You'll get assigned a block of files, whose list is in the file 'to_translate'.
 
 ## Translations ##
 
-Translate .po files located in locale/fr/, using e.g. Poedit.
+Use the translation platform at https://www.transifex.com/projects/p/adagios/translate/#fr
