@@ -52,14 +52,14 @@ def duration(value, arg = ''):
         if arg != 'long':
 
             # Set short names
-            dayUnitName = ' day'
-            dayUnitName_p = ' days'
-            hourUnitName = ' hr'
-            hourUnitName_p = ' hrs'
-            minUnitName = ' min'
-            minUnitName_p = ' mins'
-            secUnitName = ' sec'
-            secUnitName_p = ' secs'
+            dayUnitName = 'day'
+            dayUnitName_p = 'days'
+            hourUnitName = 'hr'
+            hourUnitName_p = 'hrs'
+            minUnitName = 'min'
+            minUnitName_p = 'mins'
+            secUnitName = 'sec'
+            secUnitName_p = 'secs'
 
             # Set short duration unit splitters
             lastDurSplitter = ' '
@@ -69,14 +69,14 @@ def duration(value, arg = ''):
         else:
 
             # Set long names
-            dayUnitName = ' day'
-            dayUnitName_p = ' days'
-            hourUnitName = ' hour'
-            hourUnitName_p = ' hours'
-            minUnitName = ' minute'
-            minUnitName_p = ' minutes'
-            secUnitName = ' second'
-            secUnitName_p = ' seconds'
+            dayUnitName = 'day'
+            dayUnitName_p = 'days'
+            hourUnitName = 'hour'
+            hourUnitName_p = 'hours'
+            minUnitName = 'minute'
+            minUnitName_p = 'minutes'
+            secUnitName = 'second'
+            secUnitName_p = 'seconds'
 
             # Set long duration unit splitters
             lastDurSplitter = _(' and ')
@@ -110,7 +110,7 @@ def duration(value, arg = ''):
         if days > 0:
 
             # Add multiple days to duration string
-            durationString += ' ' + str(days) + ungettext(dayUnitName, dayUnitName_p, days)
+            durationString += ' ' + str(days) + ' ' + ungettext(dayUnitName, dayUnitName_p, days)
 
         # Determine if next string is to be shown
         if hours > 0:
@@ -131,7 +131,7 @@ def duration(value, arg = ''):
         if hours > 0:
 
             # Add multiple days to duration string
-            durationString += hourSplitter + ' ' + str(hours) + ungettext(hourUnitName, hourUnitName_p, hours)
+            durationString += hourSplitter + ' ' + str(hours) + ' ' + ungettext(hourUnitName, hourUnitName_p, hours)
 
         # Determine if next string is to be shown
         if minutes > 0:
@@ -152,7 +152,7 @@ def duration(value, arg = ''):
         if minutes > 0:
 
             # Add multiple days to duration string
-            durationString += minSplitter + ' ' + str(minutes) + ungettext(minUnitName, minUnitName_p, minutes)
+            durationString += minSplitter + ' ' + str(minutes) + ' ' + ungettext(minUnitName, minUnitName_p, minutes)
 
         # Determine if next string is last
         if seconds > 0:
@@ -164,7 +164,7 @@ def duration(value, arg = ''):
         if seconds > 0:
 
             # Add multiple days to duration string
-            durationString += secSplitter + ' ' + str(seconds) + ungettext(secUnitName, secUnitName_p, seconds)
+            durationString += secSplitter + ' ' + str(seconds) + ' ' + ungettext(secUnitName, secUnitName_p, seconds)
 
         # Return duration string
         return durationString.strip()
