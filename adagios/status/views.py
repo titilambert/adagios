@@ -46,7 +46,9 @@ import adagios.status.forms
 import adagios.businessprocess
 from django.core.urlresolvers import reverse
 from adagios.status import graphite
-from adagios.status import rekishi
+
+import rekishi as rr
+from adagios.status import rekishii as rekishi
 
 state = defaultdict(lambda: "unknown")
 state[0] = "ok"
@@ -939,16 +941,53 @@ def _status_log(request):
         k = str(k)
         v = str(v)
         kwargs[k] = v
-    l = pynag.Parsers.LogFiles(maincfg=adagios.settings.nagios_config)
-    c['log'] = l.get_log_entries(
-        start_time=start_time, end_time=end_time, **kwargs)[-limit:]
-    c['log'].reverse()
-    c['logs'] = {'all': []}
-    for line in c['log']:
-        if line['class_name'] not in c['logs'].keys():
-            c['logs'][line['class_name']] = []
-        c['logs'][line['class_name']].append(line)
-        c['logs']['all'].append(line)
+    
+    print adagios.settings.enable_rekishi
+    if adagios.settings.enable_rekishi:
+        states_dict = {'UP': 0,
+                       'DOWN': 2,
+                       'OK': 0,
+                       'WARNING': 1,
+                       'CRITICAL': 2,
+                       'UNKNOWN': 3,
+                       }
+        rrr = rr.api.views.dg_host_series(request, ".*")
+        datas = json.loads(rrr.content)
+        c['log'] = datas
+        c['logs'] = {'all': []}
+        for data in datas:
+            host, service, _, event_type = data['name'].split(".")
+            if event_type == 'ALERT':
+                event_type = 'alerts'
+                if not event_type in c['logs']:
+                    c['logs'][event_type] = []
+            tmp_dict = dict([(label, d[i]) for i, label in enumerate(data['labels']) for d in data['data']])
+            tmp_dict['host_name'] = host
+            tmp_dict['time'] = float(tmp_dict['time'])
+            tmp_dict['text'] = tmp_dict['output']
+            tmp_dict['type'] = event_type
+            tmp_dict['options'] = " - ".join((host, service, tmp_dict['text']))
+            tmp_dict['service_description'] = service
+            tmp_dict['state'] = states_dict.get(tmp_dict['state'], None)
+            c['logs'][event_type].append(tmp_dict)
+            c['logs']['all'].append(tmp_dict)
+
+        print "SSSSSS"
+        print "AAAA"
+        print c['logs']
+        
+    else:
+        l = pynag.Parsers.LogFiles(maincfg=adagios.settings.nagios_config)
+        c['log'] = l.get_log_entries(
+            start_time=start_time, end_time=end_time, **kwargs)[-limit:]
+
+        c['log'].reverse()
+        c['logs'] = {'all': []}
+        for line in c['log']:
+            if line['class_name'] not in c['logs'].keys():
+                c['logs'][line['class_name']] = []
+            c['logs'][line['class_name']].append(line)
+            c['logs']['all'].append(line)
     c['start_time'] = start_time
     c['end_time'] = end_time
     return c
